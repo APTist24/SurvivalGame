@@ -6,13 +6,23 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/networking)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ui)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/states)
 
+# Собираем все .cpp файлы из подкаталогов
+file(GLOB_RECURSE CORE_SOURCES "core/*.cpp")
+file(GLOB_RECURSE ENTITIES_SOURCES "entities/*.cpp")
+file(GLOB_RECURSE WORLD_SOURCES "world/*.cpp")
+file(GLOB_RECURSE NETWORKING_SOURCES "networking/*.cpp")
+file(GLOB_RECURSE UI_SOURCES "ui/*.cpp")
+file(GLOB_RECURSE STATES_SOURCES "states/*.cpp")
+
 # Основной исполняемый файл
 add_executable(SurvivalRoguelike
     Game.cpp
-    core/Engine.cpp
-    core/GameState.cpp
-    core/ResourceManager.cpp
-    states/MainMenuState.cpp
+    ${CORE_SOURCES}
+    ${ENTITIES_SOURCES}
+    ${WORLD_SOURCES}
+    ${NETWORKING_SOURCES}
+    ${UI_SOURCES}
+    ${STATES_SOURCES}
 )
 
 # Добавляем зависимость от внешнего проекта SFML
@@ -31,9 +41,6 @@ if(WIN32)
         debug ${SFML_LIB_DIR}/sfml-window-s-d.lib optimized ${SFML_LIB_DIR}/sfml-window-s.lib
         debug ${SFML_LIB_DIR}/sfml-graphics-s-d.lib optimized ${SFML_LIB_DIR}/sfml-graphics-s.lib
         debug ${SFML_LIB_DIR}/sfml-network-s-d.lib optimized ${SFML_LIB_DIR}/sfml-network-s.lib
-        # Временно отключаем аудио
-        # debug ${SFML_LIB_DIR}/sfml-audio-s-d.lib optimized ${SFML_LIB_DIR}/sfml-audio-s.lib
-        # Системные библиотеки Windows
         winmm.lib
         opengl32.lib
         freetype.lib
@@ -41,14 +48,11 @@ if(WIN32)
         gdi32.lib
     )
 else()
-    # Линковка для Linux и других платформ
     target_link_libraries(SurvivalRoguelike PRIVATE
         debug ${SFML_LIB_DIR}/libsfml-system-s-d.a optimized ${SFML_LIB_DIR}/libsfml-system-s.a
         debug ${SFML_LIB_DIR}/libsfml-window-s-d.a optimized ${SFML_LIB_DIR}/libsfml-window-s.a
         debug ${SFML_LIB_DIR}/libsfml-graphics-s-d.a optimized ${SFML_LIB_DIR}/libsfml-graphics-s.a
         debug ${SFML_LIB_DIR}/libsfml-network-s-d.a optimized ${SFML_LIB_DIR}/libsfml-network-s.a
-        # Временно отключаем аудио
-        # debug ${SFML_LIB_DIR}/libsfml-audio-s-d.a optimized ${SFML_LIB_DIR}/libsfml-audio-s.a
     )
 endif()
 
@@ -68,7 +72,7 @@ file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/resources/fonts)
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/resources/textures)
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/resources/sounds)
 
-# Копирование ресурсов при сборке (если они будут добавлены)
+# Копирование ресурсов при сборке
 add_custom_command(TARGET SurvivalRoguelike POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:SurvivalRoguelike>/resources

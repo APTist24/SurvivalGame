@@ -1,4 +1,5 @@
 #include "MainMenuState.h"
+#include "../states/GameplayState.h"
 #include "../core/Engine.h"
 #include <iostream>
 
@@ -10,11 +11,11 @@ void MainMenuState::onEnter() {
     std::cout << "Entering main menu" << std::endl;
     
     // Настройка фона
-    background.setSize(sf::Vector2f(engine.getWindow().getSize()));
+    background.setSize(sf::Vector2f(engine.GetWindow().getSize()));
     background.setFillColor(sf::Color(20, 20, 40));
     
     // Настройка заголовка
-    titleText.setFont(engine.getResourceManager().getFont("main"));
+    titleText.setFont(engine.GetResourcesManager().getFont("main"));
     titleText.setString("Survival Roguelike");
     titleText.setCharacterSize(64);
     titleText.setFillColor(sf::Color::White);
@@ -23,8 +24,8 @@ void MainMenuState::onEnter() {
     sf::FloatRect titleBounds = titleText.getLocalBounds();
     titleText.setOrigin(titleBounds.width / 2, titleBounds.height / 2);
     titleText.setPosition(
-        engine.getWindow().getSize().x / 2.0f,
-        engine.getWindow().getSize().y * 0.2f
+        engine.GetWindow().getSize().x / 2.0f,
+        engine.GetWindow().getSize().y * 0.2f
     );
     
     // Инициализация пунктов меню
@@ -39,7 +40,7 @@ void MainMenuState::initMenuItems() {
     menuItems.clear();
     
     // Получаем шрифт
-    const sf::Font& font = engine.getResourceManager().getFont("main");
+    const sf::Font& font = engine.GetResourcesManager().getFont("main");
     
     // Создаем пункты меню с функциями обратного вызова
     MenuItem playItem;
@@ -66,13 +67,13 @@ void MainMenuState::initMenuItems() {
     menuItems.push_back(exitItem);
     
     // Позиционирование пунктов меню
-    float yPos = engine.getWindow().getSize().y * 0.4f;
+    float yPos = engine.GetWindow().getSize().y * 0.4f;
     const float yOffset = 60.0f;
     
     for (auto& item : menuItems) {
         sf::FloatRect bounds = item.text.getLocalBounds();
         item.text.setOrigin(bounds.width / 2, bounds.height / 2);
-        item.text.setPosition(engine.getWindow().getSize().x / 2.0f, yPos);
+        item.text.setPosition(engine.GetWindow().getSize().x / 2.0f, yPos);
         yPos += yOffset;
     }
     
@@ -114,31 +115,28 @@ void MainMenuState::update(float deltaTime) {
 }
 
 void MainMenuState::render(sf::RenderWindow& window) {
+    std::cout << "Rendering MainMenuState" << std::endl;
     window.draw(background);
     window.draw(titleText);
-    
     for (const auto& item : menuItems) {
         window.draw(item.text);
     }
 }
 
 void MainMenuState::startGame() {
-    std::cout << "Starting game" << std::endl;
-    // Здесь мы переходим в игровое состояние
-    // engine.changeState(std::make_unique<GameplayState>(engine));
-    // Пока заглушка
-    std::cout << "Game would start here (not implemented yet)" << std::endl;
+    std::cout << "Запуск игры" << std::endl;
+    engine.PushState(std::make_unique<GameplayState>(engine));
 }
 
 void MainMenuState::openOptions() {
     std::cout << "Opening options" << std::endl;
     // Здесь мы переходим в настройки
-    // engine.pushState(std::make_unique<OptionsState>(engine));
+    // engine.PushState(std::make_unique<OptionsState>(engine));
     // Пока заглушка
     std::cout << "Options would open here (not implemented yet)" << std::endl;
 }
 
 void MainMenuState::exitGame() {
     std::cout << "Exiting game" << std::endl;
-    engine.getWindow().close();
+    engine.GetWindow().close();
 }

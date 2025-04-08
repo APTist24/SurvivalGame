@@ -6,43 +6,51 @@
 #include "GameState.h"
 #include "ResourceManager.h"
 
-class Engine {
+class Engine
+{
 public:
     Engine();
+    
     ~Engine();
+    
+    void Init();
+    
+    void Run();
+    
+    void Shutdown();
+    
+    sf::RenderWindow& GetWindow() { return *m_window; }
+    
+    ResourceManager& GetResourcesManager() { return *m_res_manager; }
 
-    void initialize();
-    void run();
-    void shutdown();
+    // State Mach, temp here
+    void ChangeState(std::unique_ptr<GameState> state);
     
-    // Геттеры для основных компонентов
-    sf::RenderWindow& getWindow() { return *window; }
-    ResourceManager& getResourceManager() { return *resourceManager; }
+    void PushState(std::unique_ptr<GameState> state);
     
-    // Управление состояниями
-    void changeState(std::unique_ptr<GameState> state);
-    void pushState(std::unique_ptr<GameState> state);
-    void popState();
+    void PopState();
 
 private:
-    // Основные компоненты
-    std::unique_ptr<sf::RenderWindow> window;
-    std::unique_ptr<ResourceManager> resourceManager;
+    void CreateWindow();
+
+    void InitResourceManager();
+
+    void ProcessEvents();
     
-    // Стек игровых состояний
-    std::vector<std::unique_ptr<GameState>> states;
+    void Update();
     
-    // Настройки
-    std::string windowTitle = "Survival Roguelike";
-    int windowWidth = 1280;
-    int windowHeight = 720;
-    bool isRunning = false;
+    void Render();
+
+private:
+    std::unique_ptr<sf::RenderWindow> m_window;
     
-    // Управление временем
-    sf::Clock gameClock;
-    float deltaTime = 0.0f;
+    std::unique_ptr<ResourceManager> m_res_manager;
     
-    void processEvents();
-    void update();
-    void render();
+    std::vector<std::unique_ptr<GameState>> m_states;
+    
+    bool m_is_running{false};
+    
+    sf::Clock m_game_clock;
+    
+    float m_delta_time { 0.0f };
 };

@@ -7,9 +7,9 @@ int main(int argc, char* argv[]) {
 
     try {
         auto engine = std::make_unique<Engine>();
-        engine->initialize();
-        engine->run();
-        engine->shutdown();
+        engine->Init();
+        engine->Run();
+        engine->Shutdown();
     } catch (const std::exception& e) {
         std::cerr << "Fatal error: " << e.what() << std::endl;
         return EXIT_FAILURE;

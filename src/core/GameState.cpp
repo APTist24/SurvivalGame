@@ -1,4 +1,5 @@
 #include "GameState.h"
 
-GameState::GameState(Engine& engine) : engine(engine) {
+GameState::GameState(Engine& engine) : engine(engine)
+{
 }
